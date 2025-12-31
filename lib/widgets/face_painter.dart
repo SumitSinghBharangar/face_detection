@@ -1,17 +1,15 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:camera/camera.dart';
 
 class FacePainter extends CustomPainter {
   final List<Face> faces;
-  final Size absoluteImageSize; // Size of the image from camera sensor
-  final InputImageRotation rotation; // Rotation to check orientation
-  final CameraLensDirection cameraLensDirection; // To mirror front camera
+  final Size absoluteImageSize;
+  final CameraLensDirection cameraLensDirection;
 
   FacePainter({
     required this.faces,
     required this.absoluteImageSize,
-    required this.rotation,
     required this.cameraLensDirection,
   });
 
@@ -20,38 +18,37 @@ class FacePainter extends CustomPainter {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
-      ..color = Colors.red;
+      ..color = Colors.yellow;
 
     for (final face in faces) {
-      // 1. Get the bounding box
-      final rect = face.boundingBox;
-
-      // 2. Calculate scaling factors
-      // The camera image might be e.g. 1280x720, but screen is 400x800
-      // Note: In portrait, width/height are often swapped in ML Kit metadata depending on rotation
+      // Logic to convert camera coordinates to screen coordinates
       final double scaleX = size.width / absoluteImageSize.height;
       final double scaleY = size.height / absoluteImageSize.width;
 
-      // 3. Scale and translate the rect
-      // ML Kit coordinates need to be flipped for front camera mirror effect
-      double left = rect.left * scaleX;
-      double top = rect.top * scaleY;
-      double right = rect.right * scaleX;
-      double bottom = rect.bottom * scaleY;
+      double left = face.boundingBox.left * scaleX;
+      double top = face.boundingBox.top * scaleY;
+      double right = face.boundingBox.right * scaleX;
+      double bottom = face.boundingBox.bottom * scaleY;
 
+      // Mirror the rectangle if using front camera
       if (cameraLensDirection == CameraLensDirection.front) {
-        // Mirror logic for front camera
         final w = size.width;
+        // Swap left and right for mirror effect
+        double tempLeft = left;
         left = w - right;
-        right = w - (rect.left * scaleX);
+        right = w - tempLeft;
       }
 
-      canvas.drawRect(Rect.fromLTRB(left, top, right, bottom), paint);
+      canvas.drawRect(
+        Rect.fromLTRB(left, top, right, bottom),
+        paint,
+      );
     }
   }
 
   @override
   bool shouldRepaint(FacePainter oldDelegate) {
-    return oldDelegate.faces != faces;
+    return oldDelegate.faces != faces || 
+           oldDelegate.absoluteImageSize != absoluteImageSize;
   }
 }
