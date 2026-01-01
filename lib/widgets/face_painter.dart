@@ -52,3 +52,4 @@ class FacePainter extends CustomPainter {
            oldDelegate.absoluteImageSize != absoluteImageSize;
   }
 }
+
