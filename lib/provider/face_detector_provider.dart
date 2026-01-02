@@ -32,17 +32,10 @@ class FaceDetectorProvider extends ChangeNotifier {
   bool get isStaticMode => _staticImageFile != null;
   ui.Image? get staticImage => _staticImage;
 
-  // =========================================================
-  // LOGIC: GALLERY PICKER
-  // =========================================================
-
   Future<void> pickImageFromGallery() async {
     // 1. Stop the live camera to save battery/resources
     if (_cameraController != null) {
       await _cameraController!.stopImageStream();
-      // Optional: Dispose controller if you want to free camera completely
-      // await _cameraController!.dispose();
-      // _cameraController = null;
     }
 
     // 2. Pick the image
@@ -84,9 +77,11 @@ class FaceDetectorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // =========================================================
   // LOGIC: LIVE CAMERA
-  // =========================================================
+
+  InputImageRotation _rotation = InputImageRotation.rotation0deg;
+
+  InputImageRotation get rotation => _rotation;
 
   Future<void> initializeCamera() async {
     final cameras = await availableCameras();
@@ -116,7 +111,7 @@ class FaceDetectorProvider extends ChangeNotifier {
       final inputImage = _inputImageFromCameraImage(image);
       if (inputImage != null) {
         final faces = await _faceDetector.processImage(inputImage);
-        // Only update faces if we are still in live mode
+
         if (!isStaticMode) {
           _faces = faces;
           notifyListeners();
@@ -156,6 +151,7 @@ class FaceDetectorProvider extends ChangeNotifier {
     if (_cameraController == null) return null;
     final camera = _cameraController!.description;
     final sensorOrientation = camera.sensorOrientation;
+
     InputImageRotation rotation = InputImageRotation.rotation0deg;
 
     if (Platform.isIOS) {
@@ -165,7 +161,9 @@ class FaceDetectorProvider extends ChangeNotifier {
     } else if (Platform.isAndroid) {
       var rotationCompensation =
           _orientations[_cameraController!.value.deviceOrientation];
+
       if (rotationCompensation == null) return null;
+
       if (camera.lensDirection == CameraLensDirection.front) {
         rotationCompensation = (sensorOrientation + rotationCompensation) % 360;
       } else {
@@ -176,6 +174,9 @@ class FaceDetectorProvider extends ChangeNotifier {
           InputImageRotationValue.fromRawValue(rotationCompensation) ??
           InputImageRotation.rotation0deg;
     }
+    _rotation = rotation;
+
+    
 
     final format =
         InputImageFormatValue.fromRawValue(image.format.raw) ??

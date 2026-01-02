@@ -105,31 +105,32 @@ class LiveDetectorScreen extends StatelessWidget {
 
   Widget _buildLiveView(BuildContext context, FaceDetectorProvider provider) {
     final size = MediaQuery.of(context).size;
+
+    // Calculate scale to make camera fill the screen (BoxFit.cover logic)
     var scale = size.aspectRatio * provider.cameraController!.value.aspectRatio;
     if (scale < 1) scale = 1 / scale;
 
     return Stack(
       fit: StackFit.expand,
       children: [
+        // Layer 1: The Camera Preview (Zoomed/Scaled to cover)
         Transform.scale(
           scale: scale,
           child: Center(child: CameraPreview(provider.cameraController!)),
         ),
-        Transform.scale(
-          scale: scale,
-          child: Center(
-            child: AspectRatio(
-              aspectRatio: provider.cameraController!.value.aspectRatio,
-              child: CustomPaint(
-                painter: FacePainter(
-                  faces: provider.faces,
-                  absoluteImageSize: Size(
-                    provider.cameraController!.value.previewSize!.height,
-                    provider.cameraController!.value.previewSize!.width,
-                  ),
-                  cameraLensDirection: provider.cameraLensDirection,
-                ),
+
+        // Layer 2: The Painter (Full Screen, No Transform)
+        // We pass the screen size to it, and it calculates the sync manually
+        Positioned.fill(
+          child: CustomPaint(
+            painter: FacePainter(
+              faces: provider.faces,
+              absoluteImageSize: Size(
+                provider.cameraController!.value.previewSize!.width,
+                provider.cameraController!.value.previewSize!.height,
               ),
+              rotation: provider.rotation,
+              cameraLensDirection: provider.cameraLensDirection,
             ),
           ),
         ),

@@ -13,11 +13,12 @@ class StaticFacePainter extends CustomPainter {
   void paint(ui.Canvas canvas, ui.Size size) {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 5.0 // Thinner for static images usually looks better
+      ..strokeWidth = 5.0 
       ..color = const Color.fromARGB(255, 253, 228, 5);
 
     double scaleX = size.width / image.width;
     double scaleY = size.height / image.height;
+    
     double scale = scaleX < scaleY ? scaleX : scaleY;
 
     double offsetX = (size.width - image.width * scale) / 2;
