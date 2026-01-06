@@ -1,10 +1,13 @@
 # Face App
+
 A new Flutter project.
 
 ## Getting Started
+
 Face App is a Flutter-based mobile application designed to detect faces in real-time using on-device Machine Learning. Users can seamlessly switch between live camera streaming and selecting static images from their gallery, with visual overlays highlighting detected faces.
 
 ## Features
+
 ### Dual Detection Modes:
 
 - Live Stream: Real-time face detection overlay on the camera feed with high performance.
@@ -30,6 +33,7 @@ Face App is a Flutter-based mobile application designed to detect faces in real-
 - Cross-Platform: Runs on both Android and iOS.
 
 ## Technical Stack
+
 ### Framework: Flutter
 
 - ML Engine: Google ML Kit (Face Detection)
@@ -52,7 +56,7 @@ Face App is a Flutter-based mobile application designed to detect faces in real-
 1. **Clone the Repository**:
 
 ```bash
-   git clone [https://github.com/SumitSinghBharangar/type_tracker.git](https://github.com/SumitSinghBharangar/face_detection)
+   git clone https://github.com/SumitSinghBharangar/type_tracker
    cd type_tracker
 ```
 
@@ -67,10 +71,13 @@ Face App is a Flutter-based mobile application designed to detect faces in real-
 ```bash
     flutter run
 ```
+
 ### Built With 🛠️
+
 - Flutter – The UI framework for cross-platform development.
 
 ### Contributing 🤝
+
 Contributions are welcome! To contribute:
 
 1. Fork the repository.
@@ -79,10 +86,6 @@ Contributions are welcome! To contribute:
 4. Push to the branch (git push origin feature/YourFeature).
 5. Open a Pull Request.
 
-
 #### ⭐ If you like this project, star it on GitHub!
 
 Repository: [https://github.com/SumitSinghBharangar/face_detection](https://github.com/SumitSinghBharangar/face_detection)
-
-
-
